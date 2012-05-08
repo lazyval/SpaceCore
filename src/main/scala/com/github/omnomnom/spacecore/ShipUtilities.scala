@@ -26,7 +26,7 @@ trait ShipUtilities {
 
   def ApplyQuatToPoint(Q: Quaternion, vt: Vector3f): Vector3f = {
     val QMatrix: Array[Float] = new Array[Float](16)
-    createMatrix(QMatrix, QResult)
+    createMatrix(QMatrix, qResult)
     new Vector3f(
       QMatrix(0) * vt.x + QMatrix(4) * vt.y + QMatrix(8) * vt.z,
       QMatrix(1) * vt.x + QMatrix(5) * vt.y + QMatrix(9) * vt.z,
@@ -54,6 +54,4 @@ trait ShipUtilities {
     pMatrix(14) = 0
     pMatrix(15) = 1.0f
   }
-
-
 }

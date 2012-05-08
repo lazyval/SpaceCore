@@ -11,7 +11,8 @@ trait State {
   self: Variables =>
 
   def Update() {
-    if (Crashed) {
+    import Constants._
+    if (crashed) {
       System.out.println("Crashed!")
     }
     var dPitch: Double = 0
@@ -24,36 +25,36 @@ trait State {
     if (Keyboard.isKeyDown(Keyboard.KEY_F)) targetVelocity -= VEL_dMAX
     targetVelocity = math.max(math.min(targetVelocity, VEL_MAX), 0.0f)
 
-    if (targetVelocity > RealVelocity) RealVelocity += VEL_dMAX * 0.5f
-    else if (targetVelocity < RealVelocity) RealVelocity -= VEL_dMAX * 0.5f
-    Pitch += dPitch
-    Roll += dRoll
-    Forward.scale(math.cos(dPitch).asInstanceOf[Float])
-    Up.scale(math.sin(dPitch).asInstanceOf[Float])
-    Forward = Vector3f.add(Forward, Up, null)
-    Up = Vector3f.cross(Right, Forward, null)
-    Forward.normalise()
-    Up.normalise()
-    Right.scale(Math.cos(dRoll).asInstanceOf[Float])
-    Up.scale(Math.sin(dRoll).asInstanceOf[Float])
-    Right = Vector3f.add(Right, Up, null)
-    Up = Vector3f.cross(Right, Forward, null)
-    Right.normalise()
-    Up.normalise()
-    val ForwardCopy: Vector3f = new Vector3f(Forward)
-    ForwardCopy.scale(RealVelocity)
+    if (targetVelocity > realVelocity) realVelocity += VEL_dMAX * 0.5f
+    else if (targetVelocity < realVelocity) realVelocity -= VEL_dMAX * 0.5f
+    pitch += dPitch
+    roll += dRoll
+    forward.scale(math.cos(dPitch).toFloat)
+    up.scale(math.sin(dPitch).toFloat)
+    forward = Vector3f.add(forward, up, null)
+    up = Vector3f.cross(right, forward, null)
+    forward.normalise()
+    up.normalise()
+    right.scale(math.cos(dRoll).toFloat)
+    up.scale(math.sin(dRoll).toFloat)
+    right = Vector3f.add(right, up, null)
+    up = Vector3f.cross(right, forward, null)
+    right.normalise()
+    up.normalise()
+    val ForwardCopy: Vector3f = new Vector3f(forward)
+    ForwardCopy.scale(realVelocity)
     var Gravity: Float = 0.05f
-    val NVelocity: Float = math.min((RealVelocity / VEL_MAX) * 3, 1)
-    val TotalUp: Vector3f = new Vector3f(Up)
+    val NVelocity: Float = math.min((realVelocity / VEL_MAX) * 3, 1)
+    val TotalUp: Vector3f = new Vector3f(up)
     TotalUp.scale(NVelocity * Gravity)
     TotalUp.y -= Gravity
-    Vector3f.add(Position, ForwardCopy, Position)
+    Vector3f.add(position, ForwardCopy, position)
     val QRoll: Quaternion = new Quaternion
-    QRoll.setFromAxisAngle(new Vector4f(Forward.x, Forward.y, Forward.z, dRoll.toFloat))
+    QRoll.setFromAxisAngle(new Vector4f(forward.x, forward.y, forward.z, dRoll.toFloat))
     val QPitch: Quaternion = new Quaternion
-    QPitch.setFromAxisAngle(new Vector4f(Right.x, Right.y, Right.z, -dPitch.toFloat))
-    Quaternion.mul(QResult, QRoll, QResult)
-    Quaternion.mul(QResult, QPitch, QResult)
-    QResult.normalise()
+    QPitch.setFromAxisAngle(new Vector4f(right.x, right.y, right.z, -dPitch.toFloat))
+    Quaternion.mul(qResult, QRoll, qResult)
+    Quaternion.mul(qResult, QPitch, qResult)
+    qResult.normalise()
   }
 }

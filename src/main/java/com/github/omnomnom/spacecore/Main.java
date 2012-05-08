@@ -211,7 +211,7 @@ public class Main {
 
         // 2D GUI
         resizeGL2D();
-        UI.Render(testShip.RealVelocity(), testShip.targetVelocity(), testShip.VEL_MAX());
+        UI.Render(testShip.realVelocity(), testShip.targetVelocity(), Constants.VEL_MAX());
     }
 
     public void update() {

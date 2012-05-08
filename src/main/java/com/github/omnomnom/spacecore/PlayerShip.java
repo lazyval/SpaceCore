@@ -20,11 +20,11 @@ public class PlayerShip extends ScalaPlayerShip {
 
         // Translate to position
         GL11.glPushMatrix();
-        GL11.glTranslatef(Position().x, Position().y, Position().z);
+        GL11.glTranslatef(position().x, position().y, position().z);
 
         // Why isn't this a built-in feature of LWJGL
         float[] QMatrix = new float[16];
-        createMatrix(QMatrix, QResult());
+        createMatrix(QMatrix, qResult());
 
         FloatBuffer Buffer = BufferUtils.createFloatBuffer(16);
         Buffer.put(QMatrix);
@@ -96,7 +96,7 @@ public class PlayerShip extends ScalaPlayerShip {
         GL11.glPolygonOffset(-1.0f, -1.0f);
 
         GL11.glTranslatef(0, 0.001f, 0);
-        renderShadow(Position());
+        renderShadow(position());
 
         GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 

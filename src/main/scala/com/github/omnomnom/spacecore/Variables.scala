@@ -8,24 +8,16 @@ import org.lwjgl.util.vector.{Quaternion, Vector3f}
  */
 
 trait Variables {
-  protected var Forward = new Vector3f(0, 0, 1)
-  protected var Up = new Vector3f(0, 1, 0)
-  protected var Right = new Vector3f(-1, 0, 0)
-  protected var Pitch: Double = _
-  protected var Roll: Double = _
-
-  protected var Position = new Vector3f(0, 0.1f, 0)
-
-  protected var RealVelocity: Float = _
+  protected var forward = new Vector3f(0, 0, 1)
+  protected var up = new Vector3f(0, 1, 0)
+  protected var right = new Vector3f(-1, 0, 0)
+  protected var pitch: Double = _
+  protected var roll: Double = _
+  protected var position = new Vector3f(0, 0.1f, 0)
+  protected var realVelocity: Float = _
   protected var targetVelocity: Float = _
+  protected var bounced = false;
+  protected var crashed = false;
 
-  protected var Bounced = false;
-  protected var Crashed = false;
-
-
-  protected val VEL_dMAX = 0.005f;
-  protected val VEL_MAX = 0.15f;
-
-  protected val QResult = new Quaternion()
-
+  protected val qResult = new Quaternion()
 }

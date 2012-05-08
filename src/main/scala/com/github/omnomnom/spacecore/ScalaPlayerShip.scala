@@ -16,11 +16,11 @@ with State {
   override def Render() {
     // Translate to position
     GL11.glPushMatrix();
-    GL11.glTranslatef(Position.x, Position.y, Position.z);
+    GL11.glTranslatef(position.x, position.y, position.z);
 
     // Why isn't this a built-in feature of LWJGL
     val QMatrix = new Array[Float](16);
-    createMatrix(QMatrix, QResult);
+    createMatrix(QMatrix, qResult);
 
     val Buffer = BufferUtils.createFloatBuffer(16);
     //    Buffer.put(QMatrix);
@@ -61,7 +61,7 @@ with State {
     GL11.glPolygonOffset(-1.0f, -1.0f);
 
     GL11.glTranslatef(0, 0.001f, 0);
-    renderShadow(Position);
+    renderShadow(position);
 
     GL11.glDisable(GL11.GL_POLYGON_OFFSET_FILL);
 
@@ -69,9 +69,9 @@ with State {
   }
 
   def GetCameraVectors(cameraPos: Vector3f, cameraTarget: Vector3f, cameraUp: Vector3f) {
-    cameraPos.set(Position.x, Position.y, Position.z)
-    cameraTarget.set(Forward.x + Position.x, Forward.y + Position.y, Forward.z + Position.z)
-    cameraUp.set(Up.x, Up.y, Up.z)
+    cameraPos.set(position.x, position.y, position.z)
+    cameraTarget.set(forward.x + position.x, forward.y + position.y, forward.z + position.z)
+    cameraUp.set(up.x, up.y, up.z)
   }
 
   protected def renderShadow(Translation: Vector3f) {
@@ -120,7 +120,7 @@ with State {
   }
 
   def GetYaw: Float = {
-    val FFlat = new Vector3f(Forward.x, 0f, Forward.z)
+    val FFlat = new Vector3f(forward.x, 0f, forward.z)
     val RFlat = new Vector3f(1f, 0f, 0f)
     val ang = Vector3f.angle(RFlat, FFlat)
     if (Vector3f.cross(RFlat, FFlat, null).y < 0)
