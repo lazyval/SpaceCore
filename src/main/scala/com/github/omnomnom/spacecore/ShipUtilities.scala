@@ -8,8 +8,7 @@ import org.lwjgl.util.vector.{Quaternion, Vector3f}
  */
 
 trait ShipUtilities {
-
-  protected val QResult = new Quaternion()
+  vars: Variables =>
 
   // Returns the intersection point of the vector (described as two points)
   // onto the y=0 plane (or simply the XZ plane)

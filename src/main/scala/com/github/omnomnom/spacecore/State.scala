@@ -8,10 +8,9 @@ import org.lwjgl.util.vector.{Vector4f, Quaternion, Vector3f}
  */
 
 trait State {
-  self: ScalaPlayerShip =>
+  self: Variables =>
 
-
-  def Update: Unit = {
+  def Update() {
     if (Crashed) {
       System.out.println("Crashed!")
     }

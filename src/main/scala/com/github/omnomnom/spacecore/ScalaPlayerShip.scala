@@ -13,20 +13,6 @@ with ShipUtilities
 with Variables
 with State {
 
-  protected val VEL_dMAX = 0.005f;
-  protected val VEL_MAX = 0.15f;
-
-  var Pitch: Double = _
-  var Roll: Double = _
-
-  protected var Position = new Vector3f(0, 0.1f, 0)
-
-  var RealVelocity: Float = _
-  protected var targetVelocity: Float = _
-
-  protected var Bounced = false;
-  protected var Crashed = false;
-
   override def Render() {
     // Translate to position
     GL11.glPushMatrix();
@@ -67,7 +53,7 @@ with State {
     GL11.glPopMatrix();
 
     // Render the shadow (view-volume)
-    // Note: we render the shadow independant of the model's translation and rotation
+    // Note: we render the shadow independent of the model's translation and rotation
     // THOUGH NOTE: we do translate the shadow up a tiny bit off the ground so it doesnt z-fight
     GL11.glPushMatrix();
 
@@ -88,7 +74,7 @@ with State {
     cameraUp.set(Up.x, Up.y, Up.z)
   }
 
-  def renderShadow(Translation: Vector3f) {
+  protected def renderShadow(Translation: Vector3f) {
 
     // TODO: there is bug when trying to draw a shadow. Fix latter
     //    val vertices = model.v.map {
