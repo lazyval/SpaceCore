@@ -9,7 +9,7 @@ import io.Source
 import org.clapper.avsl.Logger
 
 trait OBJParser {
-  container: NewModel =>
+  container: Model =>
 
   val log = Logger(classOf[World])
 

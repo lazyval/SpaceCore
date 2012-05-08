@@ -32,6 +32,8 @@ public class PlayerShip extends ScalaPlayerShip {
 
         GL11.glMultMatrix(Buffer);
 
+
+        // normals
         GL11.glLineWidth(2.0f);
         GL11.glBegin(GL11.GL_LINES);
         GL11.glColor3f(1, 0.5f, 0.5f);

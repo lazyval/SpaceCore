@@ -23,8 +23,8 @@ with State {
     createMatrix(QMatrix, qResult);
 
     val Buffer = BufferUtils.createFloatBuffer(16);
-    //    Buffer.put(QMatrix);
-    //    Buffer.position(0);
+    Buffer.put(QMatrix);
+    Buffer.position(0);
 
     GL11.glMultMatrix(Buffer);
 

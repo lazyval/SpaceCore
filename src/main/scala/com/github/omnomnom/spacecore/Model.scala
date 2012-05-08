@@ -9,13 +9,13 @@ import util.Random
  * @author Golikov Konstantine <kostya-kostya@yandex-team.ru>
  */
 
-class NewModel(
-                val v: ListBuffer[Vector3f] = new ListBuffer[Vector3f](),
-                val f: ListBuffer[Face] = new ListBuffer[Face](),
-                val n: ListBuffer[Vector3f] = new ListBuffer[Vector3f]()
-                ) {
-  val pt = new Vector3f()
-  var yaw: Float = _
+class Model(
+             val v: ListBuffer[Vector3f] = new ListBuffer[Vector3f](),
+             val f: ListBuffer[Face] = new ListBuffer[Face](),
+             val n: ListBuffer[Vector3f] = new ListBuffer[Vector3f](),
+             val pt: Vector3f = new Vector3f(),
+             val yaw: Float = 0f
+             ) {
 
   import collection.JavaConversions._
 

@@ -21,17 +21,22 @@ class World {
   val WorldSize = 1024.0f;
   val stars = Seq.fill(1000)(new StarPoint(SkyboxSize))
 
-  val models: Seq[NewModel] = {
+  val models: Seq[Model] = {
     val road = new OBJModel("Road.obj")
     val rocks = {
       val N = 4
       for (i <- 1 to 100) yield {
-        val model = new OBJModel("Rock" + (1 + Random.nextInt(N)) + ".obj")
-        model.yaw = (Random.nextDouble() * 2.0 * math.Pi).toFloat;
-        model.pt.x = (Random.nextDouble() * 2.0 - 1.0).toFloat * SkyboxSize;
-        model.pt.z = (Random.nextDouble() * 2.0 - 1.0).toFloat * SkyboxSize;
-        model.pt.y = 0f;
-        model
+        new OBJModel(
+          path = "Rock" + (1 + Random.nextInt(N)) + ".obj",
+          yaw = (Random.nextDouble() * 2.0 * math.Pi).toFloat,
+          // randomly place rocks in the world
+          pt = new Vector3f(
+            (Random.nextDouble() * 2.0 - 1.0).toFloat * SkyboxSize,
+            // on the surface
+            0f,
+            (Random.nextDouble() * 2.0 - 1.0).toFloat * SkyboxSize
+          )
+        )
       }
     }
     // TODO: rewrite
