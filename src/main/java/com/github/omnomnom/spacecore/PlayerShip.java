@@ -16,6 +16,7 @@ import java.util.Random;
 
 public class PlayerShip extends ScalaPlayerShip {
 
+
     public void Render() {
 
         // Translate to position
@@ -48,6 +49,9 @@ public class PlayerShip extends ScalaPlayerShip {
         GL11.glVertex3f(0, 0, 0);
         GL11.glVertex3f(0, 0, 1);
         GL11.glEnd();
+
+        // emit particles
+        p().Render();
 
         // Set width to a single line
         GL11.glLineWidth(1);

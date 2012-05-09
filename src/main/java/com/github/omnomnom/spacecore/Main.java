@@ -87,15 +87,6 @@ public class Main {
         testShip = new PlayerShip();
         UI = new UserInterface();
 
-//        // Setup fog
-//        glFogi(GL_FOG_MODE, GL_EXP);
-//        //glFogfv(GL_FOG_COLOR, fogColor);
-//        glFogf(GL_FOG_DENSITY, 0.01f);
-//        glHint(GL_FOG_HINT, GL_DONT_CARE);
-//        glFogf(GL_FOG_START, World.SkyboxSize);
-//        glFogf(GL_FOG_END, World.SkyboxSize * 2);
-//        glEnable(GL_FOG);
-
     }
 
     public void destroy() {

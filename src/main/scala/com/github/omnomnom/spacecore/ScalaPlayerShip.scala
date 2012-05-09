@@ -3,6 +3,7 @@ package com.github.omnomnom.spacecore
 import org.lwjgl.opengl.GL11
 import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.BufferUtils
+import particle.ParticlePool
 
 /**
  * @author Golikov Konstantine <kostya-kostya@yandex-team.ru>
@@ -12,6 +13,7 @@ class ScalaPlayerShip extends OBJModel("Sample.obj")
 with ShipUtilities
 with Variables
 with State {
+  protected val p = new ParticlePool
 
   override def Render() {
     // Translate to position
@@ -42,6 +44,8 @@ with State {
     GL11.glVertex3f(0, 0, 0);
     GL11.glVertex3f(0, 0, 1);
     GL11.glEnd();
+
+
 
     // Set width to a single line
     GL11.glLineWidth(1);
