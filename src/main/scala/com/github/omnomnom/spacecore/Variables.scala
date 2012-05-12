@@ -14,8 +14,8 @@ trait Variables {
   protected var pitch: Double = _
   protected var roll: Double = _
   protected var position = new Vector3f(0, 0.1f, 0)
-  protected var realVelocity: Float = _
-  protected var targetVelocity: Float = _
+  var realVelocity: Float = _
+  var targetVelocity: Float = _
   protected var bounced = false;
   protected var crashed = false;
 
