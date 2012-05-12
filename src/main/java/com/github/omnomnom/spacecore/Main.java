@@ -19,7 +19,6 @@ public class Main {
     public static final int DISPLAY_WIDTH = 1400;
 
     // Renderable items
-    ScalaPlayerShip testShip;
     //    World TestWorld;
     World world = new World();
 
@@ -84,9 +83,7 @@ public class Main {
         resizeGL();
 
         // Create our world and ships
-        testShip = new PlayerShip();
         UI = new UserInterface();
-
     }
 
     public void destroy() {
@@ -157,7 +154,7 @@ public class Main {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glLoadIdentity();
 
-        // 3D render
+        // 3D Render
         resizeGL();
 
         // Move camera to right behind the ship
@@ -166,7 +163,7 @@ public class Main {
         float CDist = 6;
 
         // Set the camera on the back of the 
-        testShip.GetCameraVectors(CameraPos, CameraTarget, CameraUp);
+        world.Ship().GetCameraVectors(CameraPos, CameraTarget, CameraUp);
 
         // Tail-plane camera
         if (tailPlaneCamera) {
@@ -192,23 +189,22 @@ public class Main {
         }
 
         // Always face forward
-        float Yaw = (float) Math.toDegrees(testShip.GetYaw());
+        float Yaw = (float) Math.toDegrees(world.Ship().GetYaw());
 
-        // render all elements
+        // Render all elements
         world.Render(CameraPos, Yaw);
 
 //        TestWorld.Render(CameraPos, Yaw);
-        testShip.Render();
 
         // 2D GUI
         resizeGL2D();
-        UI.Render(testShip.realVelocity(), testShip.targetVelocity(), Constants.VEL_MAX());
+        UI.Render(world.Ship().realVelocity(), world.Ship().targetVelocity(), Constants.VEL_MAX());
     }
 
     public void update() {
         // Did the camera change?
         if (Keyboard.isKeyDown(Keyboard.KEY_Q))
             tailPlaneCamera = !tailPlaneCamera;
-        testShip.Update();
+        world.Ship().Update();
     }
 }

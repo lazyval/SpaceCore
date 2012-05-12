@@ -3,7 +3,6 @@ package com.github.omnomnom.spacecore
 import collection.mutable.ListBuffer
 import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.opengl.GL11._
-import util.Random
 
 /**
  * @author Golikov Konstantine <kostya-kostya@yandex-team.ru>
@@ -17,12 +16,6 @@ class Model(
              val yaw: Float = 0f
              ) {
 
-  import collection.JavaConversions._
-
-  def jf(): java.util.Collection[Face] = f.toSeq
-
-  def jv(): java.util.List[Vector3f] = v.toSeq
-
   def Render() {
     glLineWidth(1);
 
@@ -35,12 +28,6 @@ class Model(
 
       f.foreach {
         face: Face => {
-          mode match {
-            case GL_FILL => glColor3f(0.8f, 0.8f, 0.5f + 0.5f * (Random.nextFloat()))
-            case GL_LINE => glColor3f(0.4f, 0.4f, 0.2f + 0.2f * (Random.nextFloat()));
-            case _ => println("Unknown draw mode")
-          }
-          // Randomize the color a tiny bit
           val v1 = v((face.vertex.x - 1).toInt);
           glVertex3f(v1.x, v1.y, v1.z);
           val v2 = v((face.vertex.y - 1).toInt);
@@ -52,4 +39,5 @@ class Model(
       glEnd();
     }
   }
+
 }

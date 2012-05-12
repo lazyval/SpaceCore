@@ -34,10 +34,4 @@ class ParticlePool(val N: Int = 12000) {
     }
     )
   }
-
-  // to get flame
-  //  velocity.set(
-  //  )
-
-
 }

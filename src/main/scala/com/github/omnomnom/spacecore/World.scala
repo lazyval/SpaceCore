@@ -1,5 +1,6 @@
 package com.github.omnomnom.spacecore
 
+import collision.BoundingBoxCreator
 import util.Random
 
 import org.lwjgl.util.vector.Vector3f
@@ -12,17 +13,26 @@ import org.clapper.avsl.Logger
 
 class World {
 
-  val log = Logger(classOf[World])
+  private val log = Logger(classOf[World])
 
   log.debug("New world created")
 
   // Box size
   val SkyboxSize = 32.0f;
   val WorldSize = 1024.0f;
-  val stars = Seq.fill(1000)(new StarPoint(SkyboxSize))
+  private val stars = Seq.fill(1000)(new StarPoint(SkyboxSize))
 
-  val models: Seq[Model] = {
-    val road = new OBJModel("Road.obj")
+  val Ship: ScalaPlayerShip = new ScalaPlayerShip
+
+  private val models: Seq[OBJModel] = {
+    val road = new OBJModel("Road.obj") with BoundingBoxCreator
+
+    def randomPlaceOnSurface = new Vector3f(
+      (Random.nextDouble() * 2.0 - 1.0).toFloat * SkyboxSize,
+      0f,
+      (Random.nextDouble() * 2.0 - 1.0).toFloat * SkyboxSize
+    )
+
     val rocks = {
       val N = 4
       for (i <- 1 to 100) yield {
@@ -30,17 +40,30 @@ class World {
           path = "Rock" + (1 + Random.nextInt(N)) + ".obj",
           yaw = (Random.nextDouble() * 2.0 * math.Pi).toFloat,
           // randomly place rocks in the world
-          pt = new Vector3f(
-            (Random.nextDouble() * 2.0 - 1.0).toFloat * SkyboxSize,
-            // on the surface
-            0f,
-            (Random.nextDouble() * 2.0 - 1.0).toFloat * SkyboxSize
-          )
+          pt = randomPlaceOnSurface
         )
       }
     }
-    // TODO: rewrite
-    rocks :+ road
+
+    val hangar = new OBJModel(
+      path = "m/open_box.obj",
+      pt = randomPlaceOnSurface
+    )
+
+    val inAir = randomPlaceOnSurface
+    //    inAir.setY(0.2f * SkyboxSize)
+
+    val bunnies = Seq.fill(10)(
+      new OBJModel(
+        path = "m/bunny_200.obj",
+        pt = inAir
+      ) with BoundingBoxCreator
+    )
+
+    Seq(road, hangar) ++
+    //      rocks ++
+    bunnies;
+
   }
 
   log.debug("All models are loaded")
@@ -54,13 +77,13 @@ class World {
     glTranslatef(pos.x, pos.y, pos.z);
     glRotatef(yaw, 0f, 1f, 0f);
 
-    // render the skybox and stars
+    // Render the skybox and stars
     renderSkybox();
 
     // Be done
     glPopMatrix();
 
-    // render out the stars
+    // Render out the stars
     glPushMatrix();
 
     // Show stars
@@ -73,7 +96,7 @@ class World {
     // Draw stars
     glPushMatrix();
 
-    // render ground and right below
+    // Render ground and right below
     glTranslatef(pos.x, 0, pos.z);
 
     val color = new Vector3f(236.0f / 255.0f, 200.0f / 255.0f, 122.0f / 255.0f);
@@ -82,20 +105,34 @@ class World {
     glPopMatrix();
 
     models.foreach {
-      model =>
+      case model: OBJModel with BoundingBoxCreator =>
         glPushMatrix();
-        // render ground and right below
+        // Render ground and right below
+        glTranslatef(model.pt.x, model.pt.y, model.pt.z);
+        glRotatef(java.lang.Math.toDegrees(model.yaw).toFloat, 0, 1, 0);
+        if (model.bb.intersects(Ship.bb)) {
+          glColor3f(0.5f, 0, 0)
+        }
+        else
+          glColor3f(1f, 1f, 1f)
+        model.Render()
+        glPopMatrix();
+      case model =>
+        glPushMatrix();
+        // Render ground and right below
         glTranslatef(model.pt.x, model.pt.y, model.pt.z);
         glRotatef(java.lang.Math.toDegrees(model.yaw).toFloat, 0, 1, 0);
         model.Render()
         glPopMatrix();
     }
+
+    Ship.Render()
   }
 
   private def renderSkybox() {
     // Define the top and bottom color
-    val TopColor = new Vector3f(204f / 255f, 255f / 255f, 255f / 255f);
-    val BottomColor = new Vector3f(207f / 255f, 179f / 255f, 52f / 255f);
+    val topColor = new Vector3f(204f / 255f, 255f / 255f, 255f / 255f);
+    val bottomColor = new Vector3f(207f / 255f, 179f / 255f, 52f / 255f);
 
     // Save matrix
     glPushMatrix();
@@ -105,7 +142,7 @@ class World {
 
     // Polygon & texture map
     // Top has one constant color
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(-SkyboxSize, SkyboxSize, -SkyboxSize);
     glVertex3f(SkyboxSize, SkyboxSize, -SkyboxSize);
     glVertex3f(SkyboxSize, SkyboxSize, SkyboxSize);
@@ -117,12 +154,12 @@ class World {
     glBegin(GL_QUADS);
 
     // Polygon & texture map
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(SkyboxSize, SkyboxSize, -SkyboxSize);
-    glColor3f(BottomColor.x, BottomColor.y, BottomColor.z);
+    glColor3f(bottomColor.x, bottomColor.y, bottomColor.z);
     glVertex3f(SkyboxSize, -SkyboxSize, -SkyboxSize);
     glVertex3f(SkyboxSize, -SkyboxSize, SkyboxSize);
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(SkyboxSize, SkyboxSize, SkyboxSize);
 
     glEnd();
@@ -131,12 +168,12 @@ class World {
     glBegin(GL_QUADS);
 
     // Polygon & texture map
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(-SkyboxSize, SkyboxSize, SkyboxSize);
-    glColor3f(BottomColor.x, BottomColor.y, BottomColor.z);
+    glColor3f(bottomColor.x, bottomColor.y, bottomColor.z);
     glVertex3f(-SkyboxSize, -SkyboxSize, SkyboxSize);
     glVertex3f(-SkyboxSize, -SkyboxSize, -SkyboxSize);
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(-SkyboxSize, SkyboxSize, -SkyboxSize);
 
     glEnd();
@@ -145,12 +182,12 @@ class World {
     glBegin(GL_QUADS);
 
     // Polygon & texture map
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(SkyboxSize, SkyboxSize, SkyboxSize);
-    glColor3f(BottomColor.x, BottomColor.y, BottomColor.z);
+    glColor3f(bottomColor.x, bottomColor.y, bottomColor.z);
     glVertex3f(SkyboxSize, -SkyboxSize, SkyboxSize);
     glVertex3f(-SkyboxSize, -SkyboxSize, SkyboxSize);
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(-SkyboxSize, SkyboxSize, SkyboxSize);
 
     glEnd();
@@ -159,12 +196,12 @@ class World {
     glBegin(GL_QUADS);
 
     // Polygon & texture map
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(-SkyboxSize, SkyboxSize, -SkyboxSize);
-    glColor3f(BottomColor.x, BottomColor.y, BottomColor.z);
+    glColor3f(bottomColor.x, bottomColor.y, bottomColor.z);
     glVertex3f(-SkyboxSize, -SkyboxSize, -SkyboxSize);
     glVertex3f(SkyboxSize, -SkyboxSize, -SkyboxSize);
-    glColor3f(TopColor.x, TopColor.y, TopColor.z);
+    glColor3f(topColor.x, topColor.y, topColor.z);
     glVertex3f(SkyboxSize, SkyboxSize, -SkyboxSize);
 
     glEnd();

@@ -8,9 +8,9 @@ public class UserInterface {
 
     }
 
-    // render
+    // Render
     public void Render(float RealVelocity, float TargetVelocity, float MaxVelocity) {
-        // render a speed background bar
+        // Render a speed background bar
         glPushMatrix();
         glLoadIdentity();
 
