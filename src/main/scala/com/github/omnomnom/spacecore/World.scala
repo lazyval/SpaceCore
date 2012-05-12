@@ -22,9 +22,13 @@ class World {
   val WorldSize = 1024.0f;
   private val stars = Seq.fill(1000)(new StarPoint(SkyboxSize))
 
-  val Ship: ScalaPlayerShip = new ScalaPlayerShip
+  val Ship: PlayerShip = new PlayerShip("Sample.obj")
 
-  private val models: Seq[OBJModel] = {
+  private val models = loadModels()
+
+
+  private def loadModels(): Seq[OBJModel] = {
+
     val road = new OBJModel("Road.obj") with BoundingBoxCreator
 
     def randomPlaceOnSurface = new Vector3f(
@@ -39,7 +43,6 @@ class World {
         new OBJModel(
           path = "Rock" + (1 + Random.nextInt(N)) + ".obj",
           yaw = (Random.nextDouble() * 2.0 * math.Pi).toFloat,
-          // randomly place rocks in the world
           pt = randomPlaceOnSurface
         )
       }
@@ -51,7 +54,7 @@ class World {
     )
 
     val inAir = randomPlaceOnSurface
-    //    inAir.setY(0.2f * SkyboxSize)
+    inAir.setY(0.2f * SkyboxSize)
 
     val bunnies = Seq.fill(10)(
       new OBJModel(
@@ -61,9 +64,8 @@ class World {
     )
 
     Seq(road, hangar) ++
-    //      rocks ++
-    bunnies;
-
+      rocks ++
+      bunnies
   }
 
   log.debug("All models are loaded")
@@ -105,24 +107,21 @@ class World {
     glPopMatrix();
 
     models.foreach {
-      case model: OBJModel with BoundingBoxCreator =>
+      m =>
         glPushMatrix();
-        // Render ground and right below
-        glTranslatef(model.pt.x, model.pt.y, model.pt.z);
-        glRotatef(java.lang.Math.toDegrees(model.yaw).toFloat, 0, 1, 0);
-        if (model.bb.intersects(Ship.bb)) {
-          glColor3f(0.5f, 0, 0)
+        glTranslatef(m.pt.x, m.pt.y, m.pt.z);
+        glRotatef(java.lang.Math.toDegrees(m.yaw).toFloat, 0, 1, 0);
+        m match {
+          case model: OBJModel with BoundingBoxCreator =>
+            if (model.bb.intersects(Ship.bb)) {
+              glColor3f(0.5f, 0, 0)
+            }
+            else
+              glColor3f(1f, 1f, 1f)
+          case model =>
+            glColor3f(0.5f, 0.5f, 0.5f)
         }
-        else
-          glColor3f(1f, 1f, 1f)
-        model.Render()
-        glPopMatrix();
-      case model =>
-        glPushMatrix();
-        // Render ground and right below
-        glTranslatef(model.pt.x, model.pt.y, model.pt.z);
-        glRotatef(java.lang.Math.toDegrees(model.yaw).toFloat, 0, 1, 0);
-        model.Render()
+        m.Render()
         glPopMatrix();
     }
 
@@ -236,6 +235,5 @@ class World {
         glEnd();
     }
   }
-
 }
 

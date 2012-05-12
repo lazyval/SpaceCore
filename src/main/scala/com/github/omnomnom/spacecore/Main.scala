@@ -16,7 +16,6 @@ object Main extends App {
   final val DISPLAY_WIDTH = 1400
 
   val world = new World
-  val UI = new UserInterface
   val CameraPos, CameraTarget, CameraUp = new Vector3f
   var tailPlaneCamera = false
   var Time: Float = _
@@ -26,11 +25,10 @@ object Main extends App {
   Display.setFullscreen(false)
   Display.setTitle("SpaceCore lab. Dialog systems.")
   Display.create
-  //Keyboard
   Keyboard.create
-  //Mouse
   Mouse.setGrabbed(false)
   Mouse.create
+
   initGL
   resizeGL
   run()
@@ -40,22 +38,6 @@ object Main extends App {
     glDisable(GL_DEPTH_TEST)
   }
 
-  def create() {
-    Display.setDisplayMode(new DisplayMode(DISPLAY_WIDTH, DISPLAY_HEIGHT))
-    Display.setVSyncEnabled(true)
-    Display.setFullscreen(false)
-    Display.setTitle("SpaceCore lab. Dialog systems.")
-    Display.create
-    //Keyboard
-    Keyboard.create
-    //Mouse
-    Mouse.setGrabbed(false)
-    Mouse.create
-    //OpenGL
-    initGL
-    resizeGL
-    // Create our world and ships
-  }
 
   def destroy {
     Mouse.destroy
@@ -68,19 +50,19 @@ object Main extends App {
     world.Ship.Update
   }
 
-  def resizeGL2D {
+  def resizeGL2D() {
     glViewport(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
     glMatrixMode(GL_PROJECTION)
-    glLoadIdentity
+    glLoadIdentity()
     gluOrtho2D(0.0f, DISPLAY_WIDTH.toFloat, DISPLAY_HEIGHT.toFloat, 0.0f)
     glMatrixMode(GL_MODELVIEW)
     glDisable(GL_DEPTH_TEST)
   }
 
-  def resizeGL {
+  def resizeGL() {
     glViewport(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT)
     glMatrixMode(GL_PROJECTION)
-    glLoadIdentity
+    glLoadIdentity()
     gluPerspective(45.0f, (DISPLAY_WIDTH.toFloat / DISPLAY_HEIGHT.toFloat), 0.1f, 100.0f)
     glMatrixMode(GL_MODELVIEW)
     glClearDepth(1.0f)
@@ -116,7 +98,7 @@ object Main extends App {
     glLoadIdentity
     resizeGL
     Time += 0.001f
-    val CDist: Float = 6
+    val CDist = 6f
     world.Ship.GetCameraVectors(CameraPos, CameraTarget, CameraUp)
     if (tailPlaneCamera) {
       val Dir: Vector3f = new Vector3f
@@ -130,11 +112,11 @@ object Main extends App {
       GLU.gluLookAt(CameraPos.x, CameraPos.y, CameraPos.z, CameraTarget.x, CameraTarget.y, CameraTarget.z, CameraUp.x, CameraUp.y, CameraUp.z)
     }
     else {
-      GLU.gluLookAt(CDist * Math.cos(Time).asInstanceOf[Float], CDist, CDist * Math.sin(Time).asInstanceOf[Float], CameraPos.x, CameraPos.y, CameraPos.z, 0, 1, 0)
+      GLU.gluLookAt(CDist * math.cos(Time).toFloat, CDist, CDist * math.sin(Time).toFloat, CameraPos.x, CameraPos.y, CameraPos.z, 0, 1, 0)
     }
-    val Yaw: Float = Math.toDegrees(world.Ship.GetYaw).asInstanceOf[Float]
+    val Yaw = java.lang.Math.toDegrees(world.Ship.GetYaw).toFloat
     world.Render(CameraPos, Yaw)
     resizeGL2D
-    UI.Render(world.Ship.realVelocity, world.Ship.targetVelocity, Constants.VEL_MAX)
+    UserInterface.Render(world.Ship.realVelocity, world.Ship.targetVelocity, Constants.VEL_MAX)
   }
 }

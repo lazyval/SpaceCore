@@ -11,7 +11,7 @@ import java.util.Random
  * @author Golikov Konstantine <kostya-kostya@yandex-team.ru>
  */
 
-class ScalaPlayerShip extends OBJModel("Sample.obj")
+class PlayerShip(modelFile: String) extends OBJModel(modelFile)
 with ShipUtilities
 with Variables
 with State
@@ -42,7 +42,7 @@ with BoundingBoxCreator {
     GL11.glVertex3f(0, 0, 1)
     GL11.glEnd
 
-    p.Render
+    //    p.Render
 
     GL11.glLineWidth(1)
 
